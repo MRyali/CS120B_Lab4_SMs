@@ -39,6 +39,14 @@ expect state Led2
 # Check pass/fail
 checkResult
 
+test "PINA: 0x00, state: Start => PORTB: 0x01, state: Led 1"
+set state = Start
+setPINA 0x00
+continue 2
+expectPORTB 0x01
+expect state Start
+checkResult
+
 
 # Report on how many tests passed/tests ran
 set $passed=$tests-$failed

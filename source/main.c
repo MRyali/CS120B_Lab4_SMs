@@ -20,7 +20,12 @@ unsigned char button;
 void Tick() {
 	switch(state) {
 		case Start:
-			state = Led2;
+			if (button == 1) {
+				state = Led2;
+			}
+			else {
+				state = Start;
+			}
 			break;
 		case Led2:
 			if (button == 1) {
@@ -43,7 +48,7 @@ void Tick() {
 				state = Led1;
 			}
 			else {
-				state = Led2; 
+				state = Start; 
 			}
 			break;
 		default:

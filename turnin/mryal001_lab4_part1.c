@@ -20,7 +20,12 @@ unsigned char button;
 void Tick() {
 	switch(state) {
 		case Start:
-			state = Led2;
+			if (button == 1) { //check if button has been pressed in the initial state
+				state = Led2;
+			}
+			else {
+				state = Start;
+			}
 			break;
 		case Led2:
 			if (button == 1) {
@@ -31,7 +36,7 @@ void Tick() {
 			}
 			break;
 		case Wait:
-			if (button == 1) {
+			if (button == 1) { //wait for another button press to transition to new Led
 				state = Led1;
 			}
 			else {
@@ -43,7 +48,7 @@ void Tick() {
 				state = Led1;
 			}
 			else {
-				state = Led2; 
+				state = Start; 
 			}
 			break;
 		default:
@@ -78,9 +83,8 @@ int main(void) {
 
 	state = Start;
 	
-
     	while (1) {
-		button = PINA & 0x01;
+		button = PINA & 0x01; //start with PB0 Led on
 		Tick();
 		PORTB = tempB;
     	}

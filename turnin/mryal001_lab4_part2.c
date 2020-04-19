@@ -52,6 +52,7 @@ void Tick() {
 			else {
 				state = Wait;
 			}
+			break;
 		case Zero: 
 			if (button0 && !button1) {
 				state = Inc;
@@ -111,7 +112,7 @@ void Tick() {
 
 int main(void) {
 	DDRA = 0x00; PORTA = 0xFF; //input
-	DDRB = 0xFF; PORTB = 0x00; //output
+	DDRC = 0xFF; PORTC = 0x00; //output
 
 	state = Start;
 	tempC = 0x07;

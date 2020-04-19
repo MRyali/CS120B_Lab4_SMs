@@ -34,7 +34,7 @@ void Tick() {
 				state = Zero;
 			}
 			else {
-				state = Start;
+				state = Init;
 			}
 			break;
 		case Inc:
@@ -59,11 +59,11 @@ void Tick() {
 			else if (!button0 && button1) {
 				state = Dec;
 			}
-			else if (button0 && button1) {
-				state = Zero;
+			else if (!button0 && !button1) {
+				state = Init;
 			}
 			else {
-				state = Init;
+				state = Zero;
 			}
 			break;
 		case Wait:
@@ -84,7 +84,6 @@ void Tick() {
 
 	switch(state) {
 		case Start:
-			tempC = 0x07;
 			break;
 		case Init:
 			break;
@@ -104,7 +103,6 @@ void Tick() {
 		case Wait:
 			break;
 		default:
-			tempC = 0x07;
 			break;
 	}
 }

@@ -12,43 +12,69 @@
 #include "simAVRHeader.h"
 #endif
 
-enum States {Start, Led2, Wait, Led1} state;
+enum States {Start, Init, Inc, Dec, Zero, Wait} state;
 
-unsigned char tempB;
-unsigned char button;
+unsigned char tempC;
+unsigned char button0;
+unsigned char button1;
 
 void Tick() {
 	switch(state) {
 		case Start:
-			if (button == 1) {
-				state = Led2;
+			state = Init;
+			break;
+		case Init:
+			if (button0 && !button1) {
+				state = Inc;
+			}
+			else if (!button0 && button1) {
+				state = Dec;
+			}
+			else if (button0 && button1) {
+				state = Zero;
 			}
 			else {
 				state = Start;
 			}
 			break;
-		case Led2:
-			if (button == 1) {
-				state = Led2;
+		case Inc:
+			if (button0 && button1) {
+				state = Zero;
 			}
 			else {
 				state = Wait;
+			}
+			break;
+		case Dec:
+			if (button0 && button1) {
+				state = Zero;
+			}
+			else {
+				state = Wait;
+			}
+		case Zero: 
+			if (button0 && !button1) {
+				state = Inc;
+			}		   
+			else if (!button0 && button1) {
+				state = Dec;
+			}
+			else if (button0 && button1) {
+				state = Zero;
+			}
+			else {
+				state = Init;
 			}
 			break;
 		case Wait:
-			if (button == 1) {
-				state = Led1;
+			if (!button0 && !button1) {
+				state = Init;
+			}
+			else if (button0 && button1) {
+				state = Zero;
 			}
 			else {
 				state = Wait;
-			}
-			break;
-		case Led1:
-			if (button == 1) {
-				state = Led1;
-			}
-			else {
-				state = Start; 
 			}
 			break;
 		default:
@@ -58,19 +84,27 @@ void Tick() {
 
 	switch(state) {
 		case Start:
-			tempB = 0x01;
+			tempC = 0x07;
 			break;
-		case Led2:
-			tempB = 0x02;
+		case Init:
+			break;
+		case Inc:
+			if (tempC < 9) {
+				tempC = tempC + 1;
+			}
+			break;
+		case Dec:
+			if (tempC > 0) {
+				tempC = tempC - 1;
+			}
+			break;
+		case Zero:
+			tempC = 0;
 			break;
 		case Wait:
-			tempB = 0x02;
-			break;
-		case Led1:
-			tempB = 0x01;
 			break;
 		default:
-			tempB = 0x01;
+			tempC = 0x07;
 			break;
 	}
 }
@@ -82,12 +116,13 @@ int main(void) {
 	DDRB = 0xFF; PORTB = 0x00; //output
 
 	state = Start;
-	
+	tempC = 0x07;
 
     	while (1) {
-		button = PINA & 0x01;
+		button0 = PINA & 0x01;
+		button1 = PINA & 0x02;
 		Tick();
-		PORTB = tempB;
+		PORTC = tempC;
     	}
     	return 1;
 }

@@ -12,7 +12,7 @@
 #include "simAVRHeader.h"
 #endif
 
-enum States {Start, Led2, Wait, Led1} state;
+enum States {Start, Init, Led2, Wait, Led1} state;
 
 unsigned char tempB;
 unsigned char button;
@@ -20,18 +20,21 @@ unsigned char button;
 void Tick() {
 	switch(state) {
 		case Start:
+			state = Init;
+			break;
+		case Init:
 			if (button == 1) { //check if button has been pressed in the initial state
 				state = Led2;
 			}
 			else {
-				state = Start;
+				state = Init;
 			}
 			break;
 		case Led2:
-			if (button == 1) {
+			if (button == 1) { //check if button is pushed
 				state = Led2;
 			}
-			else {
+			else { //otherwise wait for action
 				state = Wait;
 			}
 			break;
@@ -39,16 +42,16 @@ void Tick() {
 			if (button == 1) { //wait for another button press to transition to new Led
 				state = Led1;
 			}
-			else {
+			else { //continue waiting for action
 				state = Wait;
 			}
 			break;
 		case Led1:
-			if (button == 1) {
+			if (button == 1) { //check if button is pushed
 				state = Led1;
 			}
-			else {
-				state = Start; 
+			else { //go back to start to reset SM
+				state = Init; 
 			}
 			break;
 		default:
@@ -57,16 +60,19 @@ void Tick() {
 	}
 
 	switch(state) {
-		case Start:
+		case Start: //default starts with PB0 set to 1
 			tempB = 0x01;
 			break;
-		case Led2:
+		case Init:
+			tempB = 0x01;
+			break;
+		case Led2: //PB1 set to 1
 			tempB = 0x02;
 			break;
 		case Wait:
 			tempB = 0x02;
 			break;
-		case Led1:
+		case Led1: //PB0 set to 1
 			tempB = 0x01;
 			break;
 		default:

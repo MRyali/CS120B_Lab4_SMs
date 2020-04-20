@@ -15,8 +15,8 @@
 enum States {Start, Init, Inc, Dec, Zero, Wait} state;
 
 unsigned char tempC;
-unsigned char button0;
-unsigned char button1;
+unsigned char button0; //PA0
+unsigned char button1; //PA1
 
 void Tick() {
 	switch(state) {
@@ -24,36 +24,36 @@ void Tick() {
 			state = Init;
 			break;
 		case Init:
-			if (button0 && !button1) {
+			if (button0 && !button1) { //check if PA0 is 1
 				state = Inc;
 			}
-			else if (!button0 && button1) {
+			else if (!button0 && button1) { //check if PA1 is 1
 				state = Dec;
 			}
-			else if (button0 && button1) {
+			else if (button0 && button1) { //check if both are pressed
 				state = Zero;
 			}
-			else {
+			else { //wait for button push
 				state = Init;
 			}
 			break;
 		case Inc:
-			if (button0 && button1) {
+			if (button0 && button1) {//check if both pressed
 				state = Zero;
 			}
-			else {
+			else { //wait for new action
 				state = Wait;
 			}
 			break;
 		case Dec:
-			if (button0 && button1) {
+			if (button0 && button1) {//check if both pressed
 				state = Zero;
 			}
-			else {
+			else { //wait for new action
 				state = Wait;
 			}
 			break;
-		case Zero: 
+		case Zero: //check which button is pushed during zero state
 			if (button0 && !button1) {
 				state = Inc;
 			}		   
@@ -67,7 +67,7 @@ void Tick() {
 				state = Zero;
 			}
 			break;
-		case Wait:
+		case Wait: //wait for new action
 			if (!button0 && !button1) {
 				state = Init;
 			}
@@ -88,17 +88,17 @@ void Tick() {
 			break;
 		case Init:
 			break;
-		case Inc:
+		case Inc: //increase while temp is below 9
 			if (tempC < 9) {
 				tempC = tempC + 1;
 			}
 			break;
-		case Dec:
+		case Dec: //decrease while temp is greater than 0
 			if (tempC > 0) {
 				tempC = tempC - 1;
 			}
 			break;
-		case Zero:
+		case Zero: //set to zero
 			tempC = 0;
 			break;
 		case Wait:
@@ -115,11 +115,11 @@ int main(void) {
 	DDRC = 0xFF; PORTC = 0x00; //output
 
 	state = Start;
-	tempC = 0x07;
+	tempC = 0x07; //initially start with 7
 
     	while (1) {
-		button0 = PINA & 0x01;
-		button1 = PINA & 0x02;
+		button0 = PINA & 0x01; //PA0
+		button1 = PINA & 0x02; //PA1
 		Tick();
 		PORTC = tempC;
     	}

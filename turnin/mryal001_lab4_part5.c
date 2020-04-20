@@ -12,7 +12,7 @@
 #include "simAVRHeader.h"
 #endif
 
-enum States {Start, Locked, Wait, Release, Unlock, OtherWait, OtherRelease} state;
+enum States {Start, Locked, Wait, Release, Unlock} state;
 
 unsigned short tempC; //store state numbers
 unsigned char tempB;
@@ -49,8 +49,12 @@ void Tick() {
 			}
 			break;
 		case Release:
-			if (!buttonX && buttonY && !lockButton && !buttonPound) { //unlock only if Y is pressed
-				state = Unlock;
+			if (buttonX && !buttonY && !lockButton && !buttonPound) { //unlock only if X-Y-X is pressed
+				if (!buttonX && buttonY && !lockButton && !buttonPound) {
+					if (buttonX && !buttonY && !lockButton && !buttonPound) {
+						state = Unlock;
+					}
+				}
 			}
 			else if (!buttonX && !buttonY && !lockButton && !buttonPound) { //stay on release and wait for a button press
 				state = Release;
@@ -70,6 +74,7 @@ void Tick() {
 				state = Unlock;
 			}
 			break;
+		/*
 		case OtherWait:
 			if (!buttonX && !buttonY && lockButton && !buttonPound) {//lock
 				state = Locked;
@@ -95,6 +100,7 @@ void Tick() {
 				state = Unlock;
 			}	
 			break;
+		*/
 		default:
 			state = Start;
 			break;
@@ -117,12 +123,14 @@ void Tick() {
 			tempB = 0x01;
 			tempC = 0x0011;
 			break;
+		/*
 		case OtherWait:
 			tempC = 0x0100;
 			break;
 		case OtherRelease:
 			tempC = 0x0101;
-			break;	
+			break;
+		*/	
 		default:
 			break;
 	}

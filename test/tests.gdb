@@ -27,24 +27,40 @@ echo ======================================================\n
 echo Running all tests..."\n\n
 
 # Example test:
-test "PINA: 0x01, state: Start => PORTB: 0x02, state: Led2"
+test "PINA: 0x01, state: Start => PORTB: 0x00, state: Locked"
 # Set inputs
 set state = Start
-setPINA 0x01
+setPINA 0x00
 # Continue for several ticks
 continue 2
 # Set expect values
-expectPORTB 0x02
-expect state Led2
+expectPORTB 0x00
+expect state Locked
 # Check pass/fail
 checkResult
 
-test "PINA: 0x00, state: Start => PORTB: 0x01, state: Led 1"
+test "PINA: 0x00, state: Start => PORTB: 0x00, state: Locked"
 set state = Start
-setPINA 0x00
+setPINA 0x03
+continue 2
+expectPORTB 0x00
+expect state Locked
+checkResult
+
+test "PINA: 0x04, state: Unlock => PORTB: 0x01, state: Unlock"
+set state = Unlock
+setPINA 0x04
 continue 2
 expectPORTB 0x01
-expect state Start
+expect state Unlock
+checkResult
+
+test "PINA: 0x80, state = Locked => PORTB: 0x00, state: Locked"
+set state = Locked
+setPINA 0x80
+continue 2
+expectPORTB 0x00
+expect state Locked
 checkResult
 
 

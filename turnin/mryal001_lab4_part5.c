@@ -68,7 +68,7 @@ void Tick() {
 				state = Locked;
 			}
 			else if (!buttonX && !buttonY && !lockButton && buttonPound) { //new wait to allow for earlier code to lock
-				state = OtherWait;
+				state = Wait;
 			}
 			else { //stay unlocked
 				state = Unlock;

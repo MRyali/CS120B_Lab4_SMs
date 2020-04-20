@@ -54,6 +54,9 @@ void Tick() {
 					if (buttonX && !buttonY && !lockButton && !buttonPound) {
 						state = Unlock;
 					}
+					else {
+						state = Locked;
+					}
 				}
 			}
 			else if (!buttonX && !buttonY && !lockButton && !buttonPound) { //stay on release and wait for a button press
@@ -74,33 +77,6 @@ void Tick() {
 				state = Unlock;
 			}
 			break;
-		/*
-		case OtherWait:
-			if (!buttonX && !buttonY && lockButton && !buttonPound) {//lock
-				state = Locked;
-			}
-			else if (!buttonX && !buttonY && !lockButton && !buttonPound) {//consider earlier code
-				state = OtherRelease;
-			}
-			else if (!buttonX && !buttonY && !lockButton && buttonPound) {
-				state = OtherWait;
-			}
-			else {
-				state = Unlock;
-			}
-			break;
-		case OtherRelease:
-			if (!buttonX && !buttonY && !lockButton && !buttonPound) {//wait for action
-				state = OtherRelease;
-			}
-			else if ((!buttonX && buttonY && !lockButton && !buttonPound) || (!buttonX && !buttonY && lockButton && !buttonPound)) { //considers past input
-				state = Locked;
-			}
-			else {
-				state = Unlock;
-			}	
-			break;
-		*/
 		default:
 			state = Start;
 			break;
@@ -123,14 +99,6 @@ void Tick() {
 			tempB = 0x01;
 			tempC = 0x0011;
 			break;
-		/*
-		case OtherWait:
-			tempC = 0x0100;
-			break;
-		case OtherRelease:
-			tempC = 0x0101;
-			break;
-		*/	
 		default:
 			break;
 	}
